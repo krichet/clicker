@@ -42,7 +42,7 @@ app.get('/parser', function(req,res){
         args: ['--no-sandbox']
       }
     );
-    const page = await browser.newPage();
+    let page = await browser.newPage();
     // page.setDefaultNavigationTimeout(0)
     
 
@@ -68,8 +68,8 @@ app.get('/parser', function(req,res){
 
     await Promise.all([
       console.log(await page.url()),
-      page.keyboard.press('Enter', {delay: 100}),
-      page.waitForNavigation(),
+      await page.keyboard.press('Enter', {delay: 100}),
+      await page.waitForNavigation(),
     ]).catch(e => console.log(e))
 
     //
@@ -78,16 +78,24 @@ app.get('/parser', function(req,res){
       // getNewPage(),
       console.log(await page.url()),
       // page.screenshot({ path: 'products.png' }),
-      page.click('.product-pod__title__product'),
+      await page.click('.product-pod__title__product')
+      
     ]).catch(e => console.log(e))
 
+    
     const singleProductPage = await Promise.all([
-      // getNewPage(),      
-      console.log(await page.url())
-      // page.screenshot({ path: 'single.png' }),
+
+      console.log(await page.url()),    
+      
+      await page.waitForSelector('.super-sku__inline-tile'),
+      await page.screenshot({ path: 'single.png' }),
+      await page.click('.increment')
+
     ]).catch(e => console.log(e))    
 
-    console.log(await browser.pages())
+    await browser.close()
+
+
 
     
 
@@ -98,7 +106,7 @@ app.get('/parser', function(req,res){
 
 
 
-    // await browser.close()
+    
 
     function getNewPage() {
       return new Promise((resolve) => {
@@ -116,3 +124,18 @@ app.get('/parser', function(req,res){
   })(); 
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
