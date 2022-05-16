@@ -38,7 +38,7 @@ app.get('/parser', function(req,res){
   (async () => {
     const browser = await puppeteer.launch(
       {
-        headless: false,
+        headless: true,
         args: ['--no-sandbox']
       }
     );
@@ -86,7 +86,7 @@ app.get('/parser', function(req,res){
     const singleProductPage = await Promise.all([
 
       console.log(await page.url()),    
-      
+      console.log(await page.title()),
       await page.waitForSelector('.super-sku__inline-tile'),
       await page.screenshot({ path: 'single.png' }),
       await page.click('.increment')
