@@ -1,0 +1,36 @@
+<!doctype html>
+<html>  
+	<head>    
+
+		<title>Dashboard</title> 
+		<link rel="stylesheet" href="css/style.css">
+
+	</head> 
+	<body>    
+		<div class="wrapper">
+			<div class="controlls">
+				<div class="controlls-box">
+					<div class="controlls-delays">
+						<div class="controlls-input">
+							<input type="text" placeholder="number in ms"><p>type search delay</p>
+						</div>
+						<div class="controlls-input">
+							<input type="text" placeholder="number in ms"><p>click search delay</p>
+						</div>
+						<div class="controlls-input">
+							<input type="text" placeholder="number in ms"><p>click product delay</p>
+						</div>												
+					</div>
+					<textarea name="" id="" cols="50" rows="10" class="controlls-textarea"></textarea>
+				</div>
+				<button class="controlls-send" onclick="sendData()">start</button>
+			</div>		
+			<div class="reports">
+				<h2 class="reports-title">Reports</h2>
+				<div class="reports-data"></div>
+			</div>
+		</div>		
+
+		<script src="fe-js/custom.js"></script>
+	</body>
+</html>

@@ -26,14 +26,10 @@ app.listen(PORT, () => {
   console.log('server has been started')
 })
 
+//visited URLs 
+let pageUrls = []
 
-
-app.get('/parser', function(req,res){
-
-  // let serfOptions = {
-  //   keywords: ["lexora bathroom", "faucet lexora"],
-  //   delay: 5
-  // }
+app.post('/parser', function(req,res){
 
   (async () => {
     const browser = await puppeteer.launch(
@@ -43,7 +39,7 @@ app.get('/parser', function(req,res){
       }
     );
     let page = await browser.newPage();
-    // page.setDefaultNavigationTimeout(0)
+    page.setDefaultNavigationTimeout(0)
     
 
     await page.setRequestInterception(true);
@@ -52,9 +48,10 @@ app.get('/parser', function(req,res){
     page.on('request', async (request) => {
       await puppeteerProxy.proxyRequest({
         page,
+        // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-country-us-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
         // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
         // proxyUrl: 'http://go:dgtht9@108.168.148.93:7675',
-        proxyUrl: '',
+        // proxyUrl: '',
         request,
       });
     });
@@ -67,61 +64,48 @@ app.get('/parser', function(req,res){
     await page.type('#headerSearch', 'lexora bathroom', {delay: 20})
 
     await Promise.all([
-      console.log(await page.url()),
+      pageUrls.push(await page.url()),
+      console.log(pageUrls),
       await page.keyboard.press('Enter', {delay: 100}),
-      await page.waitForNavigation(),
+      await page.waitForNavigation()
     ]).catch(e => console.log(e))
 
-    //
+    
+    
+
 
     const productsPage = await Promise.all([
       // getNewPage(),
-      console.log(await page.url()),
+      pageUrls.push(await page.url()),
+      console.log(pageUrls),
       // page.screenshot({ path: 'products.png' }),
-      await page.click('.product-pod__title__product')
-      
+      await page.click('.product-pod__title__product')      
     ]).catch(e => console.log(e))
+
+
+    
 
     
     const singleProductPage = await Promise.all([
 
-      console.log(await page.url()),    
-      console.log(await page.title()),
+      pageUrls.push(await page.url()),
+      console.log(pageUrls),    
       await page.waitForSelector('.super-sku__inline-tile'),
       await page.screenshot({ path: 'single.png' }),
       await page.click('.increment')
-
     ]).catch(e => console.log(e))    
+
+    await res.send(pageUrls)
 
     await browser.close()
 
-
-
     
-
-
-
-
-
-
-
-
     
-
-    function getNewPage() {
-      return new Promise((resolve) => {
-        browser.on('targetcreated', checkNewTarget);
-  
-        function checkNewTarget(target) {
-          if (target.type() === 'page') {
-            browser.off('targetcreated', checkNewTarget)
-            resolve(target.page())
-          }
-        }
-      });
-    }    
   
   })(); 
+
+
+  
 
 });
 
