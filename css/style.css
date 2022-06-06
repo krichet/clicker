@@ -1,0 +1,26 @@
+.wrapper {
+    margin: auto;
+    width: 50%;
+}
+
+.controlls {
+    
+}
+
+.controlls-delays input{
+    width: 200px;
+}
+
+.controlls button{
+    display: block;
+}
+
+.controlls-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.controlls-delays {
+    display: flex;
+    flex-direction: column;
+}

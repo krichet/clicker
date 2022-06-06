@@ -1,0 +1,37 @@
+<!doctype html>
+<html>  
+	<head>    
+
+		<title>Dashboard</title> 
+		<link rel="stylesheet" href="css/style.css">
+
+	</head> 
+	<body>    
+		<div class="wrapper">
+			<div class="controlls">
+				<div class="controlls-box">
+					<div class="controlls-delays">
+						<div class="controlls-input">
+							<p>type search delay</p><input type="text" placeholder="number in ms" class="controlls-input__seach">
+						</div>
+						<div class="controlls-input">
+							<p>click search button</p><input type="text" placeholder="number in ms" class="controlls-input__seach-btn">
+						</div>
+						<div class="controlls-input">
+							<p>click product delay</p><input type="text" placeholder="number in ms" class="controlls-input__product-single">
+						</div>												
+					</div>
+					<p>List of keywords</p>
+					<textarea name="" id="" cols="50" rows="10" class="controlls-textarea" placeholder="one keyword per one row"></textarea>
+				</div>
+				<button class="controlls-send" onclick="sendData()">start</button>
+			</div>		
+			<div class="reports">
+				<h2 class="reports-title">Reports</h2>
+				<div class="reports-data"></div>
+			</div>
+		</div>		
+
+		<script src="fe-js/custom.js"></script>
+	</body>
+</html>
