@@ -1,10 +1,20 @@
 //send data to server
 
+let clickerOptions = {}
+
 function getKeywords() {
   
   let keywords = document.getElementsByClassName('controlls-textarea')[0].value
-  return keywords.split('\n')
+  clickerOptions.keywords = keywords.split('\n')
   
+}
+
+function getDelays() {
+
+  clickerOptions.searchTypingDelay = document.getElementsByClassName('controlls-input__seach')[0].value
+  clickerOptions.searchBtnDelay = document.getElementsByClassName('controlls-input__seach-btn')[0].value
+  clickerOptions.singleProductDelay = document.getElementsByClassName('controlls-input__product-single')[0].value
+
 }
 
 function displayReport(data) {
@@ -22,14 +32,15 @@ data.forEach(element => {
 
 function sendData() {
 
-  let data = getKeywords()
+  getKeywords()
+  getDelays()
 
   fetch('http://localhost:85/parser', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(clickerOptions)
   })
   .then((response)=> {
     return response.json()    

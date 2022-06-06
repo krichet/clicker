@@ -19,6 +19,8 @@ app.use(cors({
   origin: '*'
 }));
 
+app.use(express.json({limit: '50mb'}))
+
 const PORT = process.env.PORT || 85
 
 //start server 
@@ -31,83 +33,97 @@ let pageUrls = []
 
 app.post('/parser', function(req,res){
 
-  (async () => {
-    const browser = await puppeteer.launch(
-      {
-        headless: true,
-        args: ['--no-sandbox']
-      }
-    );
-    let page = await browser.newPage();
-    page.setDefaultNavigationTimeout(0)
-    
+  const keywords = req.body.keywords
 
-    await page.setRequestInterception(true);
-    
-  
-    page.on('request', async (request) => {
-      await puppeteerProxy.proxyRequest({
-        page,
-        // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-country-us-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
-        // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
-        // proxyUrl: 'http://go:dgtht9@108.168.148.93:7675',
-        // proxyUrl: '',
-        request,
-      });
-    });
-
-    
-    await page.goto('https://www.homedepot.com/', {waitUntil: 'domcontentloaded'})
-
-    // await page.screenshot({ path: 'main.png' });
-    
-    await page.type('#headerSearch', 'lexora bathroom', {delay: 20})
-
-    await Promise.all([
-      pageUrls.push(await page.url()),
-      console.log(pageUrls),
-      await page.keyboard.press('Enter', {delay: 100}),
-      await page.waitForNavigation()
-    ]).catch(e => console.log(e))
-
-    
-    
+  Promise.all(keywords.map((keyword) => runClicks(req, res, keyword))).then(() => {
+    res.send(pageUrls)
+  })
+})
 
 
-    const productsPage = await Promise.all([
-      // getNewPage(),
-      pageUrls.push(await page.url()),
-      console.log(pageUrls),
-      // page.screenshot({ path: 'products.png' }),
-      await page.click('.product-pod__title__product')      
-    ]).catch(e => console.log(e))
+async function runClicks(req, res, keyword) {
 
+  let options = req.body
 
-    
-
-    
-    const singleProductPage = await Promise.all([
-
-      pageUrls.push(await page.url()),
-      console.log(pageUrls),    
-      await page.waitForSelector('.super-sku__inline-tile'),
-      await page.screenshot({ path: 'single.png' }),
-      await page.click('.increment')
-    ]).catch(e => console.log(e))    
-
-    await res.send(pageUrls)
-
-    await browser.close()
-
-    
-    
-  
-  })(); 
-
-
+  const browser = await puppeteer.launch(
+    {
+      headless: true,
+      args: ['--no-sandbox']
+    }
+  );
+  let page = await browser.newPage();
+  await page.setDefaultNavigationTimeout(0)
   
 
-});
+  await page.setRequestInterception(true);
+  
+
+  page.on('request', async (request) => {
+    await puppeteerProxy.proxyRequest({
+      page,
+      // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-country-us-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
+      // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
+      // proxyUrl: 'http://go:dgtht9@108.168.148.93:7675',
+      // proxyUrl: '',
+      request,
+    })      
+  })
+
+  
+  await page.goto('https://www.homedepot.com/', {waitUntil: 'domcontentloaded'})
+
+  // await page.screenshot({ path: 'main.png' });
+  
+  await page.type('#headerSearch', keyword, {delay: parseInt(options.searchTypingDelay)})
+
+  
+  await Promise.all([
+    pageUrls.push(await page.url()),
+    console.log(pageUrls),
+    await page.keyboard.press('Enter', {delay: parseInt(options.searchBtnDelay)}),
+    await page.waitForNavigation()
+  ]).catch(e => console.log(e))
+
+
+  const productsPage = await Promise.all([
+    // getNewPage(),
+    pageUrls.push(await page.url()),
+    console.log(pageUrls),
+    await page.setDefaultNavigationTimeout(0),
+    await page.waitForSelector('.product-pod__title__product'),
+    await page.click('.product-pod__title__product', {delay: parseInt(options.singleProductDelay)}),
+    // await page.waitForNavigation()      
+  ]).catch(e => console.log(e))
+
+
+  const singleProductPage = await Promise.all([
+
+    pageUrls.push(await page.url()),
+    console.log(pageUrls),    
+    await page.waitForSelector('.mediagallery__anchor'),
+    await page.click('.mediagallery__anchor', {delay: 5000}),
+    await page.click('.mediagallery__anchor', {delay: 1000}),
+    await page.waitForSelector('.close-button'),
+    await page.click('.close-button', {delay: 5000}),
+    await page.waitForSelector('.increment'),
+    await page.click('.increment', {delay: 3000}),
+    await page.click('.increment', {delay: 1000})
+  ]).catch(e => console.log(e))      
+
+  await setTimeout(() => {
+    browser.close()    
+  }, 20000);
+  
+
+  // try {
+  //   res.send(pageUrls)
+  // }
+
+  // catch(error) {
+  //   console.log(error)
+  // }
+
+}
 
 
 

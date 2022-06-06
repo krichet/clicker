@@ -17,6 +17,7 @@
 
 .controlls-input {
     display: flex;
+    flex-direction: column;
 }
 
 .controlls-delays {
