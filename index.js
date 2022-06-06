@@ -47,7 +47,7 @@ async function runClicks(req, res, keyword) {
 
   const browser = await puppeteer.launch(
     {
-      headless: true,
+      headless: false,
       args: ['--no-sandbox']
     }
   );
@@ -61,9 +61,7 @@ async function runClicks(req, res, keyword) {
   page.on('request', async (request) => {
     await puppeteerProxy.proxyRequest({
       page,
-      // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-country-us-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
-      // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
-      // proxyUrl: 'http://go:dgtht9@108.168.148.93:7675',
+      proxy: 'http://lum-customer-c_1447ae37-zone-residential-country-us:xug116vo90pu@zproxy.lum-superproxy.io:22225',
       // proxyUrl: '',
       request,
     })      
