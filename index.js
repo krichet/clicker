@@ -8,6 +8,7 @@ const puppeteerProxy =  require('puppeteer-proxy')
 
 const proxyChain = require('proxy-chain')
   
+
 const http = require('http')
 const url = require('url')
 const cors = require('cors')
@@ -60,6 +61,8 @@ async function runClicks(req, res, keyword) {
   page.on('request', async (request) => {
     await puppeteerProxy.proxyRequest({
       page,
+      // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-country-us-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
+      // proxyUrl: 'http://lum-customer-c_1447ae37-zone-mobile-mobile:kcmsr6iz4bvo@zproxy.lum-superproxy.io:22225',
       proxy: 'http://lum-customer-c_1447ae37-zone-residential-country-us:xug116vo90pu@zproxy.lum-superproxy.io:22225',
       // proxyUrl: '',
       request,
