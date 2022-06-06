@@ -8,7 +8,6 @@ const puppeteerProxy =  require('puppeteer-proxy')
 
 const proxyChain = require('proxy-chain')
   
-
 const http = require('http')
 const url = require('url')
 const cors = require('cors')
