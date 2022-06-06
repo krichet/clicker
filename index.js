@@ -40,7 +40,7 @@ app.post('/parser', function(req,res){
   })
 })
 
-
+// clicks logic
 async function runClicks(req, res, keyword) {
 
   let options = req.body
